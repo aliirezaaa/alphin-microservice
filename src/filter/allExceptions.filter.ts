@@ -21,7 +21,6 @@ export class AllExceptionsFilter implements RpcExceptionFilter<RpcException> {
     const validatorResponse =
       exception instanceof HttpException ? exception.getResponse() : null;
     return (validatorResponse as { message: string }).message;
-    throw new Error('Function not implemented.');
   }
   catch(exception: RpcException, host: ArgumentsHost): Observable<any> {
     const response = {
