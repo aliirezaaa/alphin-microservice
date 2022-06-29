@@ -4,24 +4,21 @@ import {
   RpcExceptionFilter,
   HttpException,
 } from '@nestjs/common';
-import { BaseExceptionFilter } from '@nestjs/core';
-import { BaseRpcExceptionFilter, RpcException } from '@nestjs/microservices';
-import { MongooseError } from 'mongoose';
 import { Observable, throwError } from 'rxjs';
 import { MongoError } from 'mongodb';
+import { RpcException } from '@nestjs/microservices';
 export const ERROR = {
   DATABASE: 'MongoServerError',
   CAST: 'CastError',
   VALIDATION: 'ValidationError',
   BAD_REQUEST: 'BadRequestException',
+  UNKNOWN: 'Unknown',
 };
 @Catch()
 export class AllExceptionsFilter implements RpcExceptionFilter<RpcException> {
   catch(exception: RpcException, host: ArgumentsHost): Observable<any> {
-    console.log('all', exception);
-    let errType = 'unknown';
     const response = {
-      error: 'DATABASE_ERROR',
+      error: ERROR.UNKNOWN,
       message: '',
     };
     switch (exception.name) {
@@ -32,7 +29,7 @@ export class AllExceptionsFilter implements RpcExceptionFilter<RpcException> {
         const errObject = JSON.parse(JSON.stringify(err.message.match(re)[0]));
         response.message = errObject;
         if (err.code == 11000) {
-          errType = 'DUPLICATE';
+          response.message = 'There is a duplicate error about ' + errObject;
         }
 
         break;
