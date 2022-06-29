@@ -22,10 +22,12 @@ export class CommentController {
   findAllUserComments(@Payload() id: string) {
     return this.commentService.findAllUserComments(id);
   }
+
   @MessagePattern('topTenStatistics')
   getTopTenStatistics() {
     return this.commentService.getTopTenStatistics();
   }
+
   @MessagePattern('findOneComment')
   findOne(@Payload() id: string) {
     return this.commentService.findOne(id);
